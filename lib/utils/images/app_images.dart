@@ -31,4 +31,5 @@ class AppImages{
   static String wishlist = "assets/svg/wishlist.svg";
   static String wishlistColorful = "assets/svg/wishlist_colorful.svg";
   static String x = "assets/svg/x.svg";
+  static String google = "assets/svg/google.svg";
 }

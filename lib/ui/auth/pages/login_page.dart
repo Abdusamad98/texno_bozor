@@ -36,7 +36,7 @@ class LoginPage extends StatelessWidget {
           GlobalButton(
               title: "Log In",
               onTap: () {
-                context.read<AuthProvider>().logIn(context);
+                context.read<AuthProvider>().logInUser(context);
               }),
           const SizedBox(height: 24),
           Row(
@@ -49,7 +49,8 @@ class LoginPage extends StatelessWidget {
                   },
                   child: const Text("Sign Up"))
             ],
-          )
+          ),
+
         ],
       ),
     );

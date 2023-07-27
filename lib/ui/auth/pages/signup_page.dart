@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:texno_bozor/providers/auth_provider.dart';
 import 'package:texno_bozor/ui/auth/widgets/global_button.dart';
 import 'package:texno_bozor/ui/auth/widgets/global_text_fields.dart';
+import 'package:texno_bozor/utils/images/app_images.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key, required this.onChanged});
@@ -44,9 +46,11 @@ class SignUpScreen extends StatelessWidget {
             controller: context.read<AuthProvider>().passwordController,
           ),
           const SizedBox(height: 24),
-          GlobalButton(title: "Sign up", onTap: () {
-            context.read<AuthProvider>().signUpUser(context);
-          }),
+          GlobalButton(
+              title: "Sign up",
+              onTap: () {
+                context.read<AuthProvider>().signUpUser(context);
+              }),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -58,7 +62,19 @@ class SignUpScreen extends StatelessWidget {
                   },
                   child: Text("Log In"))
             ],
-          )
+          ),
+          TextButton(
+              onPressed: () {
+                context.read<AuthProvider>().signInWithGoogle(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Sign Up with Google"),
+                  const SizedBox(width: 12),
+                  SvgPicture.asset(AppImages.google)
+                ],
+              ))
         ],
       ),
     );

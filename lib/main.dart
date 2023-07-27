@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:texno_bozor/app/app.dart';
+import 'package:texno_bozor/data/firebase/auth_service.dart';
+import 'package:texno_bozor/data/firebase/profile_service.dart';
 import 'package:texno_bozor/providers/auth_provider.dart';
+import 'package:texno_bozor/providers/profiles_provider.dart';
 import 'package:texno_bozor/splash/splash_screen.dart';
 
 Future<void> main() async {
@@ -13,7 +15,12 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => AuthProvider(),
+          create: (context) => AuthProvider(firebaseServices: AuthService()),
+          lazy: true,
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              ProfileProvider(profileService: ProfileService()),
           lazy: true,
         ),
       ],

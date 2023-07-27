@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:texno_bozor/data/firebase/auth_service.dart';
+import 'package:texno_bozor/data/models/universal_data.dart';
 
 class AuthProvider with ChangeNotifier {
+  AuthProvider({required this.firebaseServices});
+
+  final AuthService firebaseServices;
+
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
@@ -19,93 +25,85 @@ class AuthProvider with ChangeNotifier {
     emailController.clear();
   }
 
-  Stream<User?> listenAuthState() => FirebaseAuth.instance.authStateChanges();
-
   Future<void> signUpUser(BuildContext context) async {
     String email = emailController.text;
     String password = passwordController.text;
-    try {
-      isLoading = true;
-      notifyListeners();
-      // final credential =
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      isLoading = false;
-      notifyListeners();
-    } on FirebaseAuthException catch (e) {
-      manageMessage(context, e.code);
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        debugPrint('The account already exists for that email.');
+    notify(true);
+    UniversalData universalData =
+        await firebaseServices.signUpUser(email: email, password: password);
+    notify(false);
+
+    if (universalData.error.isEmpty) {
+      if (context.mounted) {
+        showMessage(context, "User signed Up");
       }
-    } catch (error) {
-      manageMessage(context, error.toString());
+    } else {
+      if (context.mounted) {
+        showMessage(context, universalData.error);
+      }
     }
   }
 
-  Future<void> logIn(BuildContext context) async {
+  Stream<User?> listenAuthState() => FirebaseAuth.instance.authStateChanges();
+
+  Future<void> logInUser(BuildContext context) async {
     String email = emailController.text;
     String password = passwordController.text;
-    try {
-      isLoading = true;
-      notifyListeners();
-      // final credential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      isLoading = false;
-      notifyListeners();
-    } on FirebaseAuthException catch (e) {
-      manageMessage(context, e.code);
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        debugPrint('The account already exists for that email.');
+    notify(true);
+    UniversalData universalData =
+        await firebaseServices.loginUser(email: email, password: password);
+    notify(false);
+
+    if (universalData.error.isEmpty) {
+      if (context.mounted) {
+        showMessage(context, "User Logged in");
       }
-    } catch (error) {
-      manageMessage(context, error.toString());
+    } else {
+      if (context.mounted) {
+        showMessage(context, universalData.error);
+      }
     }
   }
 
-  Future<void> logOut(BuildContext context)async{
-    try {
-      isLoading = true;
-      notifyListeners();
-      // final credential =
-      await FirebaseAuth.instance.signOut();
-      isLoading = false;
-      loginButtonPressed();
-      notifyListeners();
-    } on FirebaseAuthException catch (e) {
-      manageMessage(context, e.code);
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        debugPrint('The account already exists for that email.');
+  Future<void> logOutUser(BuildContext context) async {
+    notify(true);
+    UniversalData universalData = await firebaseServices.logOutUser();
+    notify(false);
+    if (universalData.error.isEmpty) {
+      if (context.mounted) {
+        showMessage(context, universalData.data as String);
       }
-    } catch (error) {
-      manageMessage(context, error.toString());
+    } else {
+      if (context.mounted) {
+        showMessage(context, universalData.error);
+      }
     }
   }
 
-  manageMessage(BuildContext context, String error) {
+  Future<void> signInWithGoogle(BuildContext context) async {
+    notify(true);
+    UniversalData universalData = await firebaseServices.signInWithGoogle();
+    notify(false);
+
+    if (universalData.error.isEmpty) {
+      if (context.mounted) {
+        showMessage(context, "User Signed Up with Google.");
+      }
+    } else {
+      if (context.mounted) {
+        showMessage(context, universalData.error);
+      }
+    }
+  }
+
+  notify(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
+
+  showMessage(BuildContext context, String error) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
     isLoading = false;
     notifyListeners();
   }
 }
-
-// _checkAuthState() {
-//   // Stream<User?>
-//   FirebaseAuth.instance.authStateChanges().listen((User? user) {
-//     if (user == null) {
-//       print('User is currently signed out!');
-//     } else {
-//       print('User is signed in!');
-//     }
-//   });
-// }
