@@ -18,90 +18,89 @@ class _ProfileScreenState extends State<ProfileScreen> {
     User? user = context.watch<ProfileProvider>().currentUser;
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Profile"),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  context.read<AuthProvider>().logOutUser(context);
-                },
-                icon: Icon(Icons.logout))
+      appBar: AppBar(
+        title: const Text("Profile"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                context.read<AuthProvider>().logOutUser(context);
+              },
+              icon: Icon(Icons.logout))
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: ListView(
+          children: [
+            Image.network(
+              user?.photoURL ?? "",
+              width: 100,
+              height: 100,
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: Text(
+                user?.email ?? "Empty",
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Center(
+              child: Text(
+                user?.displayName ?? "Empty",
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Center(
+              child: Text(
+                user?.phoneNumber ?? "Empty",
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            GlobalTextField(
+              hintText: "Display Name",
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              textAlign: TextAlign.start,
+              controller: context.read<ProfileProvider>().nameController,
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<ProfileProvider>().updateUsername(context);
+              },
+              child: const Text("Update name"),
+            ),
+            GlobalTextField(
+              hintText: "Email Update",
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              textAlign: TextAlign.start,
+              controller: context.read<ProfileProvider>().emailController,
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<ProfileProvider>().updateEmail(context);
+              },
+              child: const Text("Update email"),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<ProfileProvider>().updateUserImage(context,
+                    "https://cdn-icons-png.flaticon.com/512/3135/3135715.png");
+              },
+              child: const Text("Update profile image"),
+            ),
           ],
         ),
-        body: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: ListView(
-                children: [
-                  Image.network(user?.photoURL ?? ""),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      user?.email ?? "Empty",
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      user?.displayName ?? "Empty",
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      user?.phoneNumber ?? "Empty",
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  GlobalTextField(
-                    hintText: "Display Name",
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    textAlign: TextAlign.start,
-                    controller: context.read<ProfileProvider>().nameController,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      context
-                          .read<ProfileProvider>()
-                          .updateUserDisplayName(context);
-                    },
-                    child: const Text("Update name"),
-                  ),
-                  GlobalTextField(
-                    hintText: "Email Update",
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    textAlign: TextAlign.start,
-                    controller: context.read<ProfileProvider>().emailController,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      context.read<ProfileProvider>().updateEmail(context);
-                    },
-                    child: const Text("Update email"),
-                  )
-                ],
-              ),
-            ),
-            Visibility(
-              visible: context.watch<ProfileProvider>().isLoading,
-              child: const Align(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ],
-        ));
+      ),
+    );
   }
 }

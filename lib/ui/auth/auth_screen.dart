@@ -17,34 +17,24 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(isLoginPage ? "Login" : "Sign Up"),
-        ),
-        body: Stack(
-          children: [
-            isLoginPage
-                ? LoginPage(
-                    onChanged: () {
-                      setState(() {
-                        isLoginPage = false;
-                      });
-                    },
-                  )
-                : SignUpScreen(
-                    onChanged: () {
-                      setState(() {
-                        isLoginPage = true;
-                      });
-                    },
-                  ),
-            Visibility(
-              visible: context.watch<AuthProvider>().isLoading,
-              child: const Align(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator(),
-              ),
+      appBar: AppBar(
+        title: Text(isLoginPage ? "Login" : "Sign Up"),
+      ),
+      body: isLoginPage
+          ? LoginPage(
+              onChanged: () {
+                setState(() {
+                  isLoginPage = false;
+                });
+              },
             )
-          ],
-        ));
+          : SignUpScreen(
+              onChanged: () {
+                setState(() {
+                  isLoginPage = true;
+                });
+              },
+            ),
+    );
   }
 }
