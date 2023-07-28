@@ -17,7 +17,7 @@ void showLoading({required BuildContext context}) {
             child: SizedBox(
               height: 70.0,
               width: 70.0,
-              child: CustomCircularProgressIndicator(strokeWidth: 10,),
+              child: CustomCircularProgressIndicator(strokeWidth: 6,),
             ),
           ),
         ),
