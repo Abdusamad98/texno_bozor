@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:texno_bozor/providers/auth_provider.dart';
-import 'package:texno_bozor/ui/tab/categories/categories_screen.dart';
-import 'package:texno_bozor/ui/tab/products/products_screen.dart';
-import 'package:texno_bozor/ui/tab/profile/profile_screen.dart';
+import 'package:texno_bozor/ui/tab_admin/categories/categories_screen_admin.dart';
+import 'package:texno_bozor/ui/tab_admin/products/products_screen_admin.dart';
+import 'package:texno_bozor/ui/tab_admin/profile/profile_screen_admin.dart';
 
-class TabBox extends StatefulWidget {
-  const TabBox({super.key});
+class TabBoxAdmin extends StatefulWidget {
+  const TabBoxAdmin({super.key});
 
   @override
-  State<TabBox> createState() => _TabBoxState();
+  State<TabBoxAdmin> createState() => _TabBoxAdminState();
 }
 
-class _TabBoxState extends State<TabBox> {
+class _TabBoxAdminState extends State<TabBoxAdmin> {
   List<Widget> screens = [];
 
   int currentIndex = 0;
@@ -20,9 +20,9 @@ class _TabBoxState extends State<TabBox> {
   @override
   void initState() {
     screens = [
-      ProductsScreen(),
-      CategoriesScreen(),
-      ProfileScreen(),
+      ProductsScreenAdmin(),
+      CategoriesScreenAdmin(),
+      ProfileScreenAdmin(),
     ];
 
     super.initState();

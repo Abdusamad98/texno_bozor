@@ -2,33 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:texno_bozor/data/models/category/category_model.dart';
 import 'package:texno_bozor/providers/category_provider.dart';
+import 'package:texno_bozor/ui/tab_admin/categories/sub_screens/category_add_screen.dart';
 
-class CategoriesScreen extends StatefulWidget {
-  const CategoriesScreen({super.key});
+class CategoriesScreenAdmin extends StatefulWidget {
+  const CategoriesScreenAdmin({super.key});
 
   @override
-  State<CategoriesScreen> createState() => _CategoriesScreenState();
+  State<CategoriesScreenAdmin> createState() => _CategoriesScreenAdminState();
 }
 
-class _CategoriesScreenState extends State<CategoriesScreen> {
+class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Categories"),
+        title: const Text("Categories Admin"),
         actions: [
           IconButton(
             onPressed: () {
-              context.read<CategoryProvider>().addCategory(
-                    context: context,
-                    categoryModel: CategoryModel(
-                      categoryId: "",
-                      categoryName: "Planshetlar",
-                      description: "Zo'r telefonlar",
-                      imageUrl: "imageUrl",
-                      createdAt: DateTime.now().toString(),
-                    ),
-                  );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return  CategoryAddScreen();
+                  },
+                ),
+              );
             },
             icon: const Icon(Icons.add),
           )
@@ -56,16 +55,16 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           subtitle: Text(categoryModel.description),
                           trailing: IconButton(
                             onPressed: () {
-                              context.read<CategoryProvider>().updateCategory(
-                                    context: context,
-                                    categoryModel: CategoryModel(
-                                      categoryId: categoryModel.categoryId,
-                                      categoryName: "Planshetlar zo'ridan",
-                                      description: "Zo'r telefonlar zo'ridan",
-                                      imageUrl: "imageUrl",
-                                      createdAt: DateTime.now().toString(),
-                                    ),
-                                  );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return  CategoryAddScreen(
+                                      categoryModel: categoryModel,
+                                    );
+                                  },
+                                ),
+                              );
                             },
                             icon: const Icon(Icons.edit),
                           ),

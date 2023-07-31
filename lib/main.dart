@@ -4,9 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:texno_bozor/data/firebase/auth_service.dart';
 import 'package:texno_bozor/data/firebase/category_service.dart';
+import 'package:texno_bozor/data/firebase/prodycts_service.dart';
 import 'package:texno_bozor/data/firebase/profile_service.dart';
 import 'package:texno_bozor/providers/auth_provider.dart';
 import 'package:texno_bozor/providers/category_provider.dart';
+import 'package:texno_bozor/providers/products_provider.dart';
 import 'package:texno_bozor/providers/profiles_provider.dart';
 import 'package:texno_bozor/splash/splash_screen.dart';
 
@@ -28,6 +30,11 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (context) =>
               CategoryProvider(categoryService: CategoryService()),
+          lazy: true,
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              ProductsProvider(productsService: ProductsService()),
           lazy: true,
         ),
       ],

@@ -10,6 +10,7 @@ class GlobalTextField extends StatelessWidget {
     required this.textInputAction,
     required this.textAlign,
     this.obscureText = false,
+    this.maxLine = 1,
     required this.controller,
   }) : super(key: key);
 
@@ -19,10 +20,12 @@ class GlobalTextField extends StatelessWidget {
   TextAlign textAlign;
   final bool obscureText;
   final TextEditingController controller;
+  final int maxLine;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      maxLines: maxLine,
       style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,

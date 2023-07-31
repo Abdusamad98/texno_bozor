@@ -10,44 +10,77 @@ class CategoryProvider with ChangeNotifier {
 
   final CategoryService categoryService;
 
+  TextEditingController categoryNameController = TextEditingController();
+  TextEditingController categoryDescController = TextEditingController();
+
   Future<void> addCategory({
     required BuildContext context,
-    required CategoryModel categoryModel,
+    required String imageUrl,
   }) async {
-    showLoading(context: context);
-    UniversalData universalData =
-        await categoryService.addCategory(categoryModel: categoryModel);
-    if (context.mounted) {
-      hideLoading(dialogContext: context);
-    }
-    if (universalData.error.isEmpty) {
+    String name = categoryNameController.text;
+    String categoryDesc = categoryDescController.text;
+
+    if (name.isNotEmpty && categoryDesc.isNotEmpty) {
+      CategoryModel categoryModel = CategoryModel(
+        categoryId: "",
+        categoryName: name,
+        description: categoryDesc,
+        imageUrl: imageUrl,
+        createdAt: DateTime.now().toString(),
+      );
+      showLoading(context: context);
+      UniversalData universalData =
+          await categoryService.addCategory(categoryModel: categoryModel);
       if (context.mounted) {
-        showMessage(context, universalData.data as String);
+        hideLoading(dialogContext: context);
+      }
+      if (universalData.error.isEmpty) {
+        if (context.mounted) {
+          showMessage(context, universalData.data as String);
+          clearTexts();
+          Navigator.pop(context);
+        }
+      } else {
+        if (context.mounted) {
+          showMessage(context, universalData.error);
+        }
       }
     } else {
-      if (context.mounted) {
-        showMessage(context, universalData.error);
-      }
+      showMessage(context, "Maydonlar to'liq emas!!!");
     }
   }
 
   Future<void> updateCategory({
     required BuildContext context,
-    required CategoryModel categoryModel,
+    required String imagePath,
+    required CategoryModel currentCategory,
   }) async {
-    showLoading(context: context);
-    UniversalData universalData =
-        await categoryService.updateCategory(categoryModel: categoryModel);
-    if (context.mounted) {
-      hideLoading(dialogContext: context);
-    }
-    if (universalData.error.isEmpty) {
+    String name = categoryNameController.text;
+    String categoryDesc = categoryDescController.text;
+
+    if (name.isNotEmpty && categoryDesc.isNotEmpty) {
+      showLoading(context: context);
+      UniversalData universalData = await categoryService.updateCategory(
+          categoryModel: CategoryModel(
+        categoryId: currentCategory.categoryId,
+        createdAt: currentCategory.createdAt,
+        categoryName: categoryNameController.text,
+        description: categoryDescController.text,
+        imageUrl: imagePath,
+      ));
       if (context.mounted) {
-        showMessage(context, universalData.data as String);
+        hideLoading(dialogContext: context);
       }
-    } else {
-      if (context.mounted) {
-        showMessage(context, universalData.error);
+      if (universalData.error.isEmpty) {
+        if (context.mounted) {
+          showMessage(context, universalData.data as String);
+          clearTexts();
+          Navigator.pop(context);
+        }
+      } else {
+        if (context.mounted) {
+          showMessage(context, universalData.error);
+        }
       }
     }
   }
@@ -83,5 +116,18 @@ class CategoryProvider with ChangeNotifier {
   showMessage(BuildContext context, String error) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
     notifyListeners();
+  }
+
+  setInitialValues(CategoryModel categoryModel) {
+    categoryNameController =
+        TextEditingController(text: categoryModel.categoryName);
+    categoryDescController =
+        TextEditingController(text: categoryModel.description);
+    notifyListeners();
+  }
+
+  clearTexts() {
+    categoryDescController.clear();
+    categoryNameController.clear();
   }
 }
