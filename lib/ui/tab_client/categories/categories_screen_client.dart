@@ -31,7 +31,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       (index) {
                         CategoryModel categoryModel = snapshot.data![index];
                         return ListTile(
-                          leading: Image.file(File(categoryModel.imageUrl)),
+                          leading: Image.network(
+                            categoryModel.imageUrl,
+                            width: 50,
+                            height: 50,
+                          ),
                           title: Text(categoryModel.categoryName),
                           subtitle: Text(categoryModel.description),
                         );
