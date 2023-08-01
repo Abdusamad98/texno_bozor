@@ -36,7 +36,7 @@ class _ProductsScreenAdminState extends State<ProductsScreenAdmin> {
         ],
       ),
       body: StreamBuilder<List<ProductModel>>(
-        stream: context.read<ProductsProvider>().getProducts(),
+        stream: context.read<ProductsProvider>().getProducts(""),
         builder:
             (BuildContext context, AsyncSnapshot<List<ProductModel>> snapshot) {
           if (snapshot.hasData) {

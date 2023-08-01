@@ -21,7 +21,6 @@ class CategoryAddScreen extends StatefulWidget {
 
 class _CategoryAddScreenState extends State<CategoryAddScreen> {
   ImagePicker picker = ImagePicker();
-  String imagePath = defaultImageConstant;
 
   @override
   void initState() {
@@ -33,11 +32,9 @@ class _CategoryAddScreenState extends State<CategoryAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () async {
-        Provider.of<CategoryProvider>(context, listen: false)
-            .clearTexts();
+        Provider.of<CategoryProvider>(context, listen: false).clearTexts();
         return true;
       },
       child: Scaffold(
@@ -94,14 +91,18 @@ class _CategoryAddScreenState extends State<CategoryAddScreen> {
                       },
                       style: TextButton.styleFrom(
                           backgroundColor: Theme.of(context).indicatorColor),
-                      child: imagePath == defaultImageConstant
-                          ? Text(
-                              imagePath,
-                              style: const TextStyle(color: Colors.black),
+                      child: context
+                              .watch<CategoryProvider>()
+                              .categoryUrl
+                              .isEmpty
+                          ? const Text(
+                              "Image Not Selected",
+                              style: TextStyle(color: Colors.black),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             )
-                          : Image.file(File(imagePath)),
+                          : Image.network(
+                              context.watch<CategoryProvider>().categoryUrl),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -113,38 +114,14 @@ class _CategoryAddScreenState extends State<CategoryAddScreen> {
                     ? "Add category"
                     : "Update Category",
                 onTap: () {
-                  if (imagePath != defaultImageConstant) {
-                    if (widget.categoryModel == null) {
-                      context.read<CategoryProvider>().addCategory(
-                            context: context,
-                            imageUrl: imagePath,
-                          );
-                    } else {
-                      context.read<CategoryProvider>().updateCategory(
-                          context: context,
-                          imagePath: imagePath,
-                          currentCategory: widget.categoryModel!);
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        duration: Duration(milliseconds: 500),
-                        backgroundColor: Colors.red,
-                        margin: EdgeInsets.symmetric(
-                          vertical: 100,
-                          horizontal: 20,
-                        ),
-                        behavior: SnackBarBehavior.floating,
-                        content: Text(
-                          "Select image!!!",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 22,
-                          ),
-                        ),
-                      ),
+                  if (widget.categoryModel == null) {
+                    context.read<CategoryProvider>().addCategory(
+                      context: context,
                     );
+                  } else {
+                    context.read<CategoryProvider>().updateCategory(
+                        context: context,
+                        currentCategory: widget.categoryModel!);
                   }
                 }),
           ],
@@ -199,10 +176,12 @@ class _CategoryAddScreenState extends State<CategoryAddScreen> {
       maxHeight: 512,
       maxWidth: 512,
     );
+
     if (xFile != null) {
-      setState(() {
-        imagePath = xFile.path;
-      });
+      print("VBNKM<");
+     await Provider.of<CategoryProvider>(context,listen: false)
+          .uploadCategoryImage(context, xFile);
+
     }
   }
 
@@ -213,9 +192,8 @@ class _CategoryAddScreenState extends State<CategoryAddScreen> {
       maxWidth: 512,
     );
     if (xFile != null) {
-      setState(() {
-        imagePath = xFile.path;
-      });
+      await Provider.of<CategoryProvider>(context,listen: false)
+          .uploadCategoryImage(context, xFile);
     }
   }
 }

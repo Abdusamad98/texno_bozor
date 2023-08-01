@@ -24,7 +24,7 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return  CategoryAddScreen();
+                    return CategoryAddScreen();
                   },
                 ),
               );
@@ -45,6 +45,11 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
                       (index) {
                         CategoryModel categoryModel = snapshot.data![index];
                         return ListTile(
+                          leading: Image.network(
+                            categoryModel.imageUrl,
+                            width: 50,
+                            height: 50,
+                          ),
                           onLongPress: () {
                             context.read<CategoryProvider>().deleteCategory(
                                   context: context,
@@ -59,7 +64,7 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) {
-                                    return  CategoryAddScreen(
+                                    return CategoryAddScreen(
                                       categoryModel: categoryModel,
                                     );
                                   },
