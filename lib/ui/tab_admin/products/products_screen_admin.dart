@@ -18,6 +18,8 @@ class _ProductsScreenAdminState extends State<ProductsScreenAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Color(0xFF4F8962),
         title: const Text("Products Admin"),
         actions: [
           IconButton(
@@ -35,6 +37,7 @@ class _ProductsScreenAdminState extends State<ProductsScreenAdmin> {
           )
         ],
       ),
+
       body: StreamBuilder<List<ProductModel>>(
         stream: context.read<ProductsProvider>().getProducts(""),
         builder:
@@ -46,19 +49,20 @@ class _ProductsScreenAdminState extends State<ProductsScreenAdmin> {
                       snapshot.data!.length,
                       (index) {
                         ProductModel productModel = snapshot.data![index];
-                        return ListTile(
-                          leading: Image.file(File(productModel.productImages[0])),
+                        return
+                          ListTile(
+                          leading: SizedBox(height: 50.0,width: 50.0,child: Image.file(File(productModel.productImages[0]))),
                           onLongPress: () {
                             context.read<ProductsProvider>().deleteProduct(
                                   context: context,
                                   productId: productModel.productId,
                                 );
                           },
-                          title: Text(productModel.productName),
-                          subtitle: Text(productModel.description),
+                          title: Text(productModel.productName,style: TextStyle(color: Colors.black)),
+                          subtitle: Text(productModel.description,style: TextStyle(color: Colors.black)),
                           trailing: IconButton(
                             onPressed: () {},
-                            icon: const Icon(Icons.edit),
+                            icon: const Icon(Icons.edit, color: Colors.black),
                           ),
                         );
                       },
@@ -74,6 +78,7 @@ class _ProductsScreenAdminState extends State<ProductsScreenAdmin> {
           return const Center(child: CircularProgressIndicator());
         },
       ),
+      backgroundColor: Colors.white,
     );
   }
 }
