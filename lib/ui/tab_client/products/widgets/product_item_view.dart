@@ -24,8 +24,8 @@ class ProductItemView extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Image.file(
-            File(productModel.productImages[0]),
+          Image.network(
+           productModel.productImages[0],
             height: 150,
             width: 150,
             fit: BoxFit.cover,

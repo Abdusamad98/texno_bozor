@@ -14,6 +14,7 @@ class GlobalButton extends StatelessWidget {
     return ZoomTapAnimation(
       onTap: onTap,
       child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 25.w),
         height: 50.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.sp),

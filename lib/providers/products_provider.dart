@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:texno_bozor/data/firebase/category_service.dart';
 import 'package:texno_bozor/data/firebase/prodycts_service.dart';
 import 'package:texno_bozor/data/models/category/category_model.dart';
 import 'package:texno_bozor/data/models/product/product_model.dart';
 import 'package:texno_bozor/data/models/universal_data.dart';
+import 'package:texno_bozor/data/upload_service.dart';
 import 'package:texno_bozor/utils/ui_utils/loading_dialog.dart';
 
 class ProductsProvider with ChangeNotifier {
@@ -17,13 +19,12 @@ class ProductsProvider with ChangeNotifier {
   TextEditingController productDescController = TextEditingController();
   TextEditingController productCountController = TextEditingController();
 
-
+  List<String> uploadedImagesUrls = [];
 
   Future<void> addProduct({
     required BuildContext context,
     required String categoryId,
     required String productCurrency,
-    required List<String> imageUrls,
   }) async {
     String name = productNameController.text;
     String productDesc = productDescController.text;
@@ -34,10 +35,11 @@ class ProductsProvider with ChangeNotifier {
         productDesc.isNotEmpty &&
         priceText.isNotEmpty &&
         countText.isNotEmpty) {
+
       ProductModel productModel = ProductModel(
         count: int.parse(countText),
         price: int.parse(priceText),
-        productImages: imageUrls,
+        productImages: uploadedImagesUrls,
         categoryId: categoryId,
         productId: "",
         productName: name,
@@ -55,7 +57,7 @@ class ProductsProvider with ChangeNotifier {
       if (universalData.error.isEmpty) {
         if (context.mounted) {
           showMessage(context, universalData.data as String);
-          clearTexts();
+          clearParameters();
           Navigator.pop(context);
         }
       } else {
@@ -143,7 +145,7 @@ class ProductsProvider with ChangeNotifier {
       if (universalData.error.isEmpty) {
         if (context.mounted) {
           showMessage(context, universalData.data as String);
-          clearTexts();
+          clearParameters();
           Navigator.pop(context);
         }
       } else {
@@ -154,13 +156,25 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
+  Future<void> uploadProductImages({
+    required BuildContext context,
+    required List<XFile> images,
+  }) async {
+    showLoading(context: context);
 
+    for (var element in images) {
+      UniversalData data = await FileUploader.imageUploader(element);
+      if (data.error.isEmpty) {
+        uploadedImagesUrls.add(data.data as String);
+      }
+    }
 
+    notifyListeners();
 
-
-
-
-
+    if (context.mounted) {
+      hideLoading(dialogContext: context);
+    }
+  }
 
   setInitialValues(CategoryModel categoryModel) {
     productNameController =
@@ -170,7 +184,8 @@ class ProductsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  clearTexts() {
+  clearParameters() {
+    uploadedImagesUrls = [];
     productPriceController.clear();
     productNameController.clear();
     productDescController.clear();

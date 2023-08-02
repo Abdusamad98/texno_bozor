@@ -23,7 +23,6 @@ class ProductAddScreen extends StatefulWidget {
 
 class _ProductAddScreenState extends State<ProductAddScreen> {
   ImagePicker picker = ImagePicker();
-  String imagePath = defaultImageConstant;
   String currency = "";
 
   List<String> currencies = ["UZS", "USD", "RUB"];
@@ -35,7 +34,7 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Provider.of<ProductsProvider>(context, listen: false).clearTexts();
+        Provider.of<ProductsProvider>(context, listen: false).clearParameters();
         return true;
       },
       child: Scaffold(
@@ -185,25 +184,69 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  SizedBox(
-                    width: 150,
-                    height: 150,
+                  context.watch<ProductsProvider>().uploadedImagesUrls.isEmpty
+                      ? TextButton(
+                          onPressed: () {
+                            showBottomSheetDialog();
+                          },
+                          style: TextButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).indicatorColor),
+                          child: const Text(
+                            "Select Image",
+                            style: TextStyle(color: Colors.black),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      : SizedBox(
+                          height: 100,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              ...List.generate(
+                                  context
+                                      .watch<ProductsProvider>()
+                                      .uploadedImagesUrls
+                                      .length, (index) {
+                                String singleImage = context
+                                    .watch<ProductsProvider>()
+                                    .uploadedImagesUrls[index];
+                                return Container(
+                                  padding: const EdgeInsets.all(5),
+                                  margin: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Image.network(
+                                    singleImage,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.fill,
+                                  ),
+                                );
+                              })
+                            ],
+                          ),
+                        ),
+
+                  Visibility(
+                    visible: context.watch<ProductsProvider>().uploadedImagesUrls.isNotEmpty,
                     child: TextButton(
-                      onPressed: () {
-                        showBottomSheetDialog();
-                      },
-                      style: TextButton.styleFrom(
-                          backgroundColor: Theme.of(context).indicatorColor),
-                      child: imagePath == defaultImageConstant
-                          ? Text(
-                              imagePath,
-                              style: const TextStyle(color: Colors.black),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            )
-                          : Image.file(File(imagePath)),
+                    onPressed: () {
+                      showBottomSheetDialog();
+                    },
+                    style: TextButton.styleFrom(
+                        backgroundColor:
+                        Theme.of(context).indicatorColor),
+                    child: const Text(
+                      "Select Image",
+                      style: TextStyle(color: Colors.black),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
+                  ),),
+
                   const SizedBox(height: 24),
                 ],
               ),
@@ -213,11 +256,13 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                     ? "Add product"
                     : "Update product",
                 onTap: () {
-                  if (imagePath != defaultImageConstant &&
+                  if (context
+                          .read<ProductsProvider>()
+                          .uploadedImagesUrls
+                          .isNotEmpty &&
                       selectedCategoryId.isNotEmpty) {
                     context.read<ProductsProvider>().addProduct(
                           context: context,
-                          imageUrls: [imagePath],
                           categoryId: selectedCategoryId,
                           productCurrency: selectedCurrency,
                         );
@@ -268,14 +313,6 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
             children: [
               ListTile(
                 onTap: () {
-                  _getFromCamera();
-                  Navigator.pop(context);
-                },
-                leading: const Icon(Icons.camera_alt),
-                title: const Text("Select from Camera"),
-              ),
-              ListTile(
-                onTap: () {
                   _getFromGallery();
                   Navigator.pop(context);
                 },
@@ -289,29 +326,15 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
     );
   }
 
-  Future<void> _getFromCamera() async {
-    XFile? xFile = await picker.pickImage(
-      source: ImageSource.camera,
-      maxHeight: 512,
-      maxWidth: 512,
-    );
-    if (xFile != null) {
-      setState(() {
-        imagePath = xFile.path;
-      });
-    }
-  }
-
   Future<void> _getFromGallery() async {
-    XFile? xFile = await picker.pickImage(
-      source: ImageSource.gallery,
+    List<XFile> xFiles = await picker.pickMultiImage(
       maxHeight: 512,
       maxWidth: 512,
     );
-    if (xFile != null) {
-      setState(() {
-        imagePath = xFile.path;
-      });
-    }
+    await Provider.of<ProductsProvider>(context, listen: false)
+        .uploadProductImages(
+      context: context,
+      images: xFiles,
+    );
   }
 }

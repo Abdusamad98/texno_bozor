@@ -51,7 +51,7 @@ class _ProductsScreenAdminState extends State<ProductsScreenAdmin> {
                         ProductModel productModel = snapshot.data![index];
                         return
                           ListTile(
-                          leading: SizedBox(height: 50.0,width: 50.0,child: Image.file(File(productModel.productImages[0]))),
+                          leading: SizedBox(height: 50.0,width: 50.0,child: Image.network(productModel.productImages[0])),
                           onLongPress: () {
                             context.read<ProductsProvider>().deleteProduct(
                                   context: context,
