@@ -18,7 +18,10 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isLoginPage ? "Login" : "Sign Up"),
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        title: Text(isLoginPage ? "Login" : "Sign Up",style: TextStyle(color: Color(0xFF4F8962),fontWeight: FontWeight.w800,fontSize: 25),),
       ),
       body: isLoginPage
           ? LoginPage(
@@ -35,6 +38,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 });
               },
             ),
+      backgroundColor: Colors.white,
     );
   }
 }
