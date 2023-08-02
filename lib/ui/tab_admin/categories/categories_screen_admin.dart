@@ -16,7 +16,10 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Categories Admin"),
+        centerTitle: true,
+        backgroundColor:  Color(0xFF4F8962),
+        elevation: 0,
+        title: const Text("Categories Admin",style: TextStyle(fontSize: 20),),
         actions: [
           IconButton(
             onPressed: () {
@@ -45,10 +48,13 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
                       (index) {
                         CategoryModel categoryModel = snapshot.data![index];
                         return ListTile(
-                          leading: Image.network(
-                            categoryModel.imageUrl,
-                            width: 50,
-                            height: 50,
+                          leading: Container(
+                            decoration: BoxDecoration(border: Border.all(color:  Colors.black)),
+                            child: Image.network(
+                              categoryModel.imageUrl,
+                              width: 50,
+                              height: 50,
+                            ),
                           ),
                           onLongPress: () {
                             context.read<CategoryProvider>().deleteCategory(
@@ -56,8 +62,8 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
                                   categoryId: categoryModel.categoryId,
                                 );
                           },
-                          title: Text(categoryModel.categoryName),
-                          subtitle: Text(categoryModel.description),
+                          title: Text(categoryModel.categoryName,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 20),),
+                          subtitle: Text(categoryModel.description,style: TextStyle(color: Colors.black)),
                           trailing: IconButton(
                             onPressed: () {
                               Navigator.push(
@@ -71,7 +77,7 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.edit),
+                            icon: const Icon(Icons.edit,color: Colors.black,),
                           ),
                         );
                       },
@@ -87,6 +93,7 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
           return const Center(child: CircularProgressIndicator());
         },
       ),
+      backgroundColor: Colors.white,
     );
   }
 }
