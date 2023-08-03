@@ -8,7 +8,9 @@ import 'package:texno_bozor/utils/ui_utils/loading_dialog.dart';
 
 class OrderProvider with ChangeNotifier {
   OrderProvider({required this.orderService}) {
-    listenOrders(FirebaseAuth.instance.currentUser!.uid);
+    if(FirebaseAuth.instance.currentUser!=null) {
+      listenOrders(FirebaseAuth.instance.currentUser!.uid);
+    }
   }
 
   final OrderService orderService;
