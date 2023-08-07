@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -12,11 +13,18 @@ import 'package:texno_bozor/providers/category_provider.dart';
 import 'package:texno_bozor/providers/order_provider.dart';
 import 'package:texno_bozor/providers/products_provider.dart';
 import 'package:texno_bozor/providers/profiles_provider.dart';
+import 'package:texno_bozor/services/fcm.dart';
+import 'package:texno_bozor/services/local_notification_service.dart';
 import 'package:texno_bozor/splash/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  await initFirebase();
+  await LocalNotificationService.instance.setupFlutterNotifications();
+
+
+  //messaging.
   runApp(
     MultiProvider(
       providers: [
