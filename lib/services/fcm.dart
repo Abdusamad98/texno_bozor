@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -16,11 +15,9 @@ Future<void> initFirebase(BuildContext context) async {
   debugPrint("FCM USER TOKEN: $fcmToken");
   // await FirebaseMessaging.instance.subscribeToTopic("news");
 
-
   /// Update the iOS foreground notification presentation options to allow
   /// heads up notifications.
-  await FirebaseMessaging.instance
-      .setForegroundNotificationPresentationOptions(
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
     sound: true,
@@ -32,7 +29,7 @@ Future<void> initFirebase(BuildContext context) async {
         "NOTIFICATION FOREGROUND MODE: ${message.data["news_image"]} va ${message.notification!.title} in foreground");
     LocalNotificationService.instance.showFlutterNotification(message);
     LocalDatabase.insertNews(NewsModel.fromJson(message.data));
-    context.read<NewsProvider>().readNews();
+    if (context.mounted) context.read<NewsProvider>().readNews();
   });
 
   // BACkGROUND MESSAGE HANDLING

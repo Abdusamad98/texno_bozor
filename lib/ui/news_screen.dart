@@ -15,7 +15,6 @@ class NewsScreen extends StatefulWidget {
 class _NewsScreenState extends State<NewsScreen> with WidgetsBindingObserver {
   @override
   void initState() {
-    initFirebase(context);
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }

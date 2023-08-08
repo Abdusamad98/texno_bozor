@@ -1,7 +1,8 @@
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:texno_bozor/ui/news_screen.dart';
 
 class LocalNotificationService {
   LocalNotificationService._();
@@ -10,12 +11,11 @@ class LocalNotificationService {
 
   factory LocalNotificationService() => instance;
 
-
   late AndroidNotificationChannel channel;
 
   bool isFlutterLocalNotificationsInitialized = false;
 
-  Future<void> setupFlutterNotifications() async {
+  Future<void> setupFlutterNotifications(BuildContext context) async {
     if (isFlutterLocalNotificationsInitialized) {
       return;
     }
@@ -25,6 +25,31 @@ class LocalNotificationService {
       description:
           'This channel is used for important notifications.', // description
       importance: Importance.high,
+    );
+
+    //IOS
+    void onDidReceiveLocalNotification(
+      int id,
+      String? title,
+      String? body,
+      String? payload,
+    ) async {
+      print(payload);
+    }
+
+    // Android
+    const AndroidInitializationSettings androidInitializationSettings =
+        AndroidInitializationSettings("app_icon");
+
+    //IOS
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+      onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+    );
+
+    InitializationSettings initializationSettings = InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: initializationSettingsDarwin,
     );
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -38,6 +63,22 @@ class LocalNotificationService {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) {
+        print("PAYLOAD:  ---  ${notificationResponse.payload} $context");
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return NewsScreen();
+            },
+          ),
+        );
+      },
+    );
 
     isFlutterLocalNotificationsInitialized = true;
   }
@@ -47,20 +88,20 @@ class LocalNotificationService {
     AndroidNotification? android = message.notification?.android;
     if (notification != null && android != null && !kIsWeb) {
       flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            channelDescription: channel.description,
-            // TODO add a proper drawable resource to android, for now using
-            //      one that already exists in example app.
-            icon: 'launch_background',
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
+              icon: 'background',
+            ),
           ),
-        ),
-      );
+          payload: message.data["screen_name"]);
     }
   }
 
