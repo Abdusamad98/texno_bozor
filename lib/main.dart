@@ -20,7 +20,7 @@ import 'package:texno_bozor/splash/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initFirebase();
+  //await initFirebase();
   await LocalNotificationService.instance.setupFlutterNotifications();
 
 

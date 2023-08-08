@@ -2,9 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 import 'package:texno_bozor/services/local_notification_service.dart';
 
-Future<void> initFirebase() async {
+Future<void> initFirebase(BuildContext context) async {
   await Firebase.initializeApp();
   String? fcmToken = await FirebaseMessaging.instance.getToken();
   debugPrint("FCM USER TOKEN: $fcmToken");
@@ -12,10 +13,10 @@ Future<void> initFirebase() async {
 
   // FOREGROUND MESSAGE HANDLING.
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    debugPrint(
-        "NOTIFICATION FOREGROUND MODE: ${message.data["news_image"]} va ${message.notification!.title} in foreground");
+    debugPrint("NOTIFICATION FOREGROUND MODE: ${message.data["news_image"]} va ${message.notification!.title} in foreground");
     LocalNotificationService.instance.showFlutterNotification(message);
-
+    //LocalDatabase.insertNews(NewsModel.fromJson(jsonDecode(message.data)))
+    // context.read<NewsProvider>().readNews();
   });
 
   // BACkGROUND MESSAGE HANDLING
@@ -27,12 +28,14 @@ Future<void> initFirebase() async {
     debugPrint(
         "NOTIFICATION FROM TERMINATED MODE: ${message.data["news_image"]} va ${message.notification!.title} in terminated");
     LocalNotificationService.instance.showFlutterNotification(message);
+
   }
 
   RemoteMessage? remoteMessage = await FirebaseMessaging.instance.getInitialMessage();
 
   if (remoteMessage != null) {
     handleMessage(remoteMessage);
+    //LocalDatabase.insertNews(NewsModel.fromJson(jsonDecode(remoteMessage.data)))
   }
 
   FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
@@ -40,6 +43,9 @@ Future<void> initFirebase() async {
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+
+  //LocalDatabase.insertNews(NewsModel.fromJson(jsonDecode(message.data)))
+
 
   debugPrint(
       "NOTIFICATION BACKGROUND MODE: ${message.data["news_image"]} va ${message.notification!.title} in background");
