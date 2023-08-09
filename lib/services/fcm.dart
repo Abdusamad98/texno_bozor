@@ -13,7 +13,7 @@ Future<void> initFirebase(BuildContext context) async {
   await Firebase.initializeApp();
   String? fcmToken = await FirebaseMessaging.instance.getToken();
   debugPrint("FCM USER TOKEN: $fcmToken");
-  // await FirebaseMessaging.instance.subscribeToTopic("news");
+   await FirebaseMessaging.instance.subscribeToTopic("news");
 
   /// Update the iOS foreground notification presentation options to allow
   /// heads up notifications.

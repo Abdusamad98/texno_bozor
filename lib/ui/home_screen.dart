@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    initFirebase(context);
+
     super.initState();
   }
 

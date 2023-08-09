@@ -16,6 +16,7 @@ class _NewsScreenState extends State<NewsScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    initFirebase(context);
     super.initState();
   }
 
@@ -25,10 +26,16 @@ class _NewsScreenState extends State<NewsScreen> with WidgetsBindingObserver {
       appBar: AppBar(
         title: const Text("News"),
         actions: [
-          TextButton(onPressed: () {
-            FirebaseMessaging.instance.unsubscribeFromTopic("news");
-            //FirebaseMessaging.instance.subscribeToTopic("flutter_news");
-          }, child: Text("ON")),
+          TextButton(
+              onPressed: () {
+                context.read<NewsProvider>().deleteAllNews();
+              },
+              child: const Text("DELETE")),
+          TextButton(
+              onPressed: () {
+                context.read<NewsProvider>().sendNews();
+              },
+              child: const Text("SEND")),
         ],
       ),
       body: context.watch<NewsProvider>().news.isEmpty

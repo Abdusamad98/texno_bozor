@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:texno_bozor/data/network/api_service.dart';
 
 import 'package:texno_bozor/services/local_notification_service.dart';
 import 'package:texno_bozor/ui/home_screen.dart';
+import 'package:texno_bozor/ui/news_screen.dart';
 import 'package:texno_bozor/view_model/news_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await LocalNotificationService.instance.setupFlutterNotifications();
   runApp(
     ChangeNotifierProvider(
-      create: (context) => NewsProvider(),
+      create: (context) => NewsProvider(apiService: ApiService()),
       child: MyApp(),
     ),
   );
@@ -22,13 +25,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-    LocalNotificationService.instance.setupFlutterNotifications(navigatorKey.currentContext!);
-    return  MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: NewsScreen(),
       theme: ThemeData.dark(),
-      navigatorKey: navigatorKey,
     );
   }
 }

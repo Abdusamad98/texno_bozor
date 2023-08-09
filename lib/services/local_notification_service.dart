@@ -15,7 +15,7 @@ class LocalNotificationService {
 
   bool isFlutterLocalNotificationsInitialized = false;
 
-  Future<void> setupFlutterNotifications(BuildContext context) async {
+  Future<void> setupFlutterNotifications() async {
     if (isFlutterLocalNotificationsInitialized) {
       return;
     }
@@ -67,16 +67,16 @@ class LocalNotificationService {
       initializationSettings,
       onDidReceiveNotificationResponse:
           (NotificationResponse notificationResponse) {
-        print("PAYLOAD:  ---  ${notificationResponse.payload} $context");
+        print("PAYLOAD:  ---  ${notificationResponse.payload}");
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return NewsScreen();
-            },
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) {
+        //       return NewsScreen();
+        //     },
+        //   ),
+        // );
       },
     );
 
