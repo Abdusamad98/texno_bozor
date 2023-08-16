@@ -25,4 +25,22 @@ class ImageUploadProvider with ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  List<String> imageUrls = [];
+
+  uploadImages({required List<XFile> images}) async {
+    isLoading = true;
+    notifyListeners();
+
+    for (var element in images) {
+      UniversalData data = await apiService.uploadImage(file: element);
+
+      if (data.error.isEmpty) {
+        imageUrls.add("https://bozormedia.uz/${data.data}");
+      }
+    }
+
+    isLoading = false;
+    notifyListeners();
+  }
 }

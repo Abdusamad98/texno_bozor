@@ -37,17 +37,20 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           ),
           ListTile(
             onTap: () async {
-              XFile? xFile =
-                  await picker.pickImage(source: ImageSource.gallery);
-              if (xFile != null) {
-                context.read<ImageUploadProvider>().uploadImage(file: xFile);
+              List<XFile> images = await picker.pickMultiImage();
+              if (images.isNotEmpty) {
+                if (context.mounted) {
+                  context
+                      .read<ImageUploadProvider>()
+                      .uploadImages(images: images);
+                }
               }
             },
-            title: Text("Gallery"),
+            title: const Text("Gallery"),
           ),
-          if (context.watch<ImageUploadProvider>().imageUrl.isNotEmpty)
+          if (context.watch<ImageUploadProvider>().imageUrls.isNotEmpty)
             Image.network(
-              context.watch<ImageUploadProvider>().imageUrl,
+              context.watch<ImageUploadProvider>().imageUrls[0],
               width: 250,
               height: 200,
             ),
