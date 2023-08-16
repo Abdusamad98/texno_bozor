@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:texno_bozor/data/models/universal_data.dart';
 import 'package:texno_bozor/utils/constants/constants.dart';
+import 'package:http/http.dart' as http;
 
 class ApiService {
   // DIO SETTINGS
@@ -79,6 +84,45 @@ class ApiService {
       }
     } catch (error) {
       return UniversalData(error: error.toString());
+    }
+  }
+
+  Future<UniversalData> uploadImage({required XFile file}) async {
+    Uri uri = Uri.https(
+      "bozormedia.uz",
+      "/services/mobile-seller/api/client-image-upload",
+    );
+    String fileName = file.path.split('/').last;
+
+    var request = http.MultipartRequest('POST', uri);
+    try {
+      request.headers.addAll({
+        "Accept": "multipart/form-data",
+        "Authorization": token,
+      });
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          "image",
+          file.path,
+          filename: fileName,
+        ).timeout(const Duration(seconds: 30)),
+      );
+
+      var response = await request.send();
+      debugPrint('${uri.path} :${response.statusCode}');
+
+      if (response.statusCode == HttpStatus.ok) {
+        var responseString = await response.stream.bytesToString();
+        var result = jsonDecode(responseString);
+        return UniversalData(data: result['url']);
+      }
+      return UniversalData(error: response.statusCode.toString());
+    } on SocketException {
+      return UniversalData(error: "Internet Error!");
+    } on FormatException {
+      return UniversalData(error: "Format Error!");
+    } catch (err) {
+      return UniversalData(error: err.toString());
     }
   }
 }

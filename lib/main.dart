@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:texno_bozor/data/network/api_service.dart';
 
 import 'package:texno_bozor/services/local_notification_service.dart';
-import 'package:texno_bozor/ui/home_screen.dart';
+import 'package:texno_bozor/ui/image_upload_screen.dart';
 import 'package:texno_bozor/ui/news_screen.dart';
+import 'package:texno_bozor/view_model/image_upload_provider.dart';
 import 'package:texno_bozor/view_model/news_provider.dart';
 
 Future<void> main() async {
@@ -14,7 +15,7 @@ Future<void> main() async {
   await LocalNotificationService.instance.setupFlutterNotifications();
   runApp(
     ChangeNotifierProvider(
-      create: (context) => NewsProvider(apiService: ApiService()),
+      create: (context) => ImageUploadProvider(apiService: ApiService()),
       child: MyApp(),
     ),
   );
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: NewsScreen(),
+      home: ImageUploadScreen(),
       theme: ThemeData.dark(),
     );
   }
